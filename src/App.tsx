@@ -6,6 +6,7 @@ import './App.css';
 import { Layout, Select, Form } from 'antd';
 import { fetchHospital } from './util/fetchHospitals';
 import Spinner from './Components/ui/spinner';
+import Alert from './Components/ui/alert';
 
 export interface Coords {
     lng: number;
@@ -18,6 +19,8 @@ interface Prop {
     clientSecret: string;
     hospitalData: [];
     hosptName: string;
+    geoError: boolean;
+    message: string;
 }
 
 class App extends Component<{}, Prop> {
@@ -30,65 +33,88 @@ class App extends Component<{}, Prop> {
             clientId: 'LN0ZJJGKI2FVCFDBKHV1KA2CREY2WJVOZT55WH2BWYSF2PXP',
             clientSecret: '33PMHSOCZJSFYC33MFTFXGYHHESIRM0TCJVQPS5UJ3QXS253',
             hosptName: '',
+            geoError: false,
+            message: '',
         };
     }
     async componentDidMount() {
         const geo = navigator.geolocation;
-        if (!geo) {
-            console.log('Geolocation is not supported');
-        }
-        console.log('mount');
-        geo.getCurrentPosition(async (position) => {
-            console.log(position.coords.longitude, position.coords.latitude);
-            const hospitals = await fetchHospital(
-                position.coords.longitude,
-                position.coords.latitude,
-                this.state.radius
-            );
-
-            const hosptData: any = hospitals.map((el: any) => {
-                console.log(el);
-                return { name: el.name, ...el.location };
-            });
-
-            this.setState({
-                hospitalData: hosptData,
-            });
-            this.setState({
-                userCoords: {
-                    lng: position.coords.longitude,
-                    lat: position.coords.latitude,
-                },
-            });
-            console.log(hosptData);
-        });
-    }
-    componentDidUpdate(prevProps: any, prevState: any) {
-        if (prevState.radius !== this.state.radius) {
-            const geo = navigator.geolocation;
-            if (!geo) {
-                console.log('Geolocation is not supported');
-            }
-            geo.getCurrentPosition(async (position) => {
-                console.log(
-                    position.coords.longitude,
-                    position.coords.latitude
-                );
+        if (!geo) console.log('Geolocation is not supported');
+        geo.getCurrentPosition(
+            async (position) => {
                 const hospitals = await fetchHospital(
                     position.coords.longitude,
                     position.coords.latitude,
                     this.state.radius
                 );
+                if (hospitals.length > 0) {
+                    const hosptData: any = hospitals.map((el: any) => {
+                        console.log(el);
+                        return { name: el.name, ...el.location };
+                    });
 
-                const hosptData: any = hospitals.map((el: any) => {
-                    console.log(el);
-                    return { name: el.name, ...el.location };
-                });
-
+                    this.setState({
+                        hospitalData: hosptData,
+                    });
+                    this.setState({
+                        userCoords: {
+                            lng: position.coords.longitude,
+                            lat: position.coords.latitude,
+                        },
+                    });
+                } else {
+                    this.setState({
+                        message: 'No hospital found within this range',
+                    });
+                }
+            },
+            (error: any) => {
                 this.setState({
-                    hospitalData: hosptData,
+                    message:
+                        'Unable to get your current location please, refresh this page or user another browser ',
                 });
-            });
+            }
+        );
+    }
+    componentDidUpdate(prevProps: any, prevState: any) {
+        if (prevState.radius !== this.state.radius) {
+            const geo = navigator.geolocation;
+            if (!geo) console.log('Geolocation is not supported');
+            geo.getCurrentPosition(
+                async (position) => {
+                    const hospitals = await fetchHospital(
+                        position.coords.longitude,
+                        position.coords.latitude,
+                        this.state.radius
+                    );
+                    if (hospitals.length > 0) {
+                        const hosptData: any = hospitals.map((el: any) => {
+                            console.log(el);
+                            return { name: el.name, ...el.location };
+                        });
+
+                        this.setState({
+                            hospitalData: hosptData,
+                        });
+                        this.setState({
+                            userCoords: {
+                                lng: position.coords.longitude,
+                                lat: position.coords.latitude,
+                            },
+                        });
+                    } else {
+                        this.setState({
+                            message: 'No hospital found within this range',
+                        });
+                    }
+                },
+                (error: any) => {
+                    this.setState({
+                        message:
+                            'Unable to get your current location please, refresh this page or user another browser ',
+                    });
+                }
+            );
         }
     }
     render<Rc>() {
@@ -104,6 +130,11 @@ class App extends Component<{}, Prop> {
                             />
                             <Cards hospitalData={this.state.hospitalData} />
                         </Fragment>
+                    ) : this.state.message ? (
+                        <Alert
+                            message="Error Message"
+                            description={this.state.message}
+                        />
                     ) : (
                         <Spinner />
                     )}
