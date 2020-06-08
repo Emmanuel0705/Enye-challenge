@@ -7,6 +7,7 @@ import { Layout, Select, Form } from 'antd';
 import { fetchHospital } from './util/fetchHospitals';
 import Spinner from './Components/ui/spinner';
 import Alert from './Components/ui/alert';
+import Variables from './keys';
 
 interface Coords {
     lng: number;
@@ -15,8 +16,8 @@ interface Coords {
 interface Prop {
     userCoords: Coords;
     radius: any;
-    clientId: string | undefined;
-    clientSecret: string | undefined;
+    clientId: string;
+    clientSecret: string;
     hospitalData: [];
     hosptName: string;
     geoError: boolean;
@@ -29,9 +30,9 @@ class App extends Component<{}, Prop> {
         this.state = {
             userCoords: { lng: 0, lat: 0 },
             hospitalData: [],
-            radius: 3000,
-            clientId: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
+            radius: 5000,
+            clientId: Variables.CLIENT_ID,
+            clientSecret: Variables.CLIENT_SECRETE,
             hosptName: '',
             geoError: false,
             message: '',
@@ -39,9 +40,9 @@ class App extends Component<{}, Prop> {
     }
     async componentDidMount() {
         console.log(
-            process.env.MAPBOX_TOKEN,
-            process.env.CLIENT_SECRET,
-            process.env.CLIENT_ID
+            Variables.MAPBOX_TOKEN,
+            Variables.CLIENT_SECRETE,
+            Variables.CLIENT_ID
         );
         const geo = navigator.geolocation;
         if (!geo) console.log('Geolocation is not supported');
