@@ -29,7 +29,7 @@ class App extends Component<{}, Prop> {
         this.state = {
             userCoords: { lng: 0, lat: 0 },
             hospitalData: [],
-            radius: 1000,
+            radius: 3000,
             clientId: 'LN0ZJJGKI2FVCFDBKHV1KA2CREY2WJVOZT55WH2BWYSF2PXP',
             clientSecret: '33PMHSOCZJSFYC33MFTFXGYHHESIRM0TCJVQPS5UJ3QXS253',
             hosptName: '',
