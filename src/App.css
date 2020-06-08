@@ -1,38 +1,40 @@
-.App {
-  text-align: center;
-}
+@import '~antd/dist/antd.css';
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.logo {
+    width: 150px;
+    float: left;
+    color: white;
+    text-shadow: 2px 3px 6px #000;
+    font-weight: bolder;
+    font-size: 20px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.menu {
+    background-color: black;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.map-section {
+    background-color: white;
+    height: 400px;
 }
-
-.App-link {
-  color: #61dafb;
+.marker {
+    background-image: url('./Components/Map/marker.png');
+    background-size: cover;
+    width: 30px;
+    height: 50px;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cards-container {
+    padding: 20px;
+}
+.spinner-container {
+    height: 600px;
+    width: 100%;
+    background-color: 1890ff;
+    text-align: center;
+    padding-top: 200px;
+}
+.select-km {
+    width: 50%;
+    position: absolute;
+    top: 12%;
+    background: transparent;
+    left: 1%;
 }
