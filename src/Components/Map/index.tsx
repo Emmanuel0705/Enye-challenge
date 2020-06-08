@@ -3,8 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import ReactMapboxGl from 'react-mapbox-gl';
 
 ReactMapboxGl({
-    accessToken:
-        'pk.eyJ1Ijoib2x1d2F0b2JpMTYiLCJhIjoiY2tiNDMwcGZ3MDEzYzJxcXY1eG8wZXQydSJ9.Du7ktziHmbmXp3X9GGGauQ',
+    accessToken: '',
 });
 
 interface Coords {
@@ -16,8 +15,10 @@ interface Props {
     userCoords: Coords;
     hospitalData: [];
 }
-const token =
-    'pk.eyJ1Ijoib2x1d2F0b2JpMTYiLCJhIjoiY2tiNDMwcGZ3MDEzYzJxcXY1eG8wZXQydSJ9.Du7ktziHmbmXp3X9GGGauQ';
+
+// const token =
+//     'pk.eyJ1Ijoib2x1d2F0b2JpMTYiLCJhIjoiY2tiNDMwcGZ3MDEzYzJxcXY1eG8wZXQydSJ9.Du7ktziHmbmXp3X9GGGauQ';
+const token: string | undefined = process.env.MAPBOX_TOKEN;
 mapboxgl.accessToken = token;
 
 const MapContainer: FC<Props> = ({ hospitalData, userCoords }) => {
