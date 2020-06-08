@@ -13,6 +13,7 @@
 }
 .map-section {
     background-color: white;
+    overflow: hidden;
     height: 400px;
 }
 .marker {

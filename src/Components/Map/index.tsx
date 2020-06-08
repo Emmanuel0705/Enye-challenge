@@ -1,5 +1,11 @@
 import React, { FC, useEffect, useState, createRef } from 'react';
 import mapboxgl from 'mapbox-gl';
+import ReactMapboxGl from 'react-mapbox-gl';
+
+ReactMapboxGl({
+    accessToken:
+        'pk.eyJ1Ijoib2x1d2F0b2JpMTYiLCJhIjoiY2tiNDMwcGZ3MDEzYzJxcXY1eG8wZXQydSJ9.Du7ktziHmbmXp3X9GGGauQ',
+});
 
 interface Coords {
     lng: number;
@@ -16,7 +22,7 @@ mapboxgl.accessToken = token;
 
 const MapContainer: FC<Props> = ({ hospitalData, userCoords }) => {
     const [mapData] = useState({
-        zoom: 2,
+        zoom: 5,
         mapContainer: createRef<HTMLDivElement>(),
     });
     useEffect((): void => {
