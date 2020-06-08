@@ -8,15 +8,15 @@ import { fetchHospital } from './util/fetchHospitals';
 import Spinner from './Components/ui/spinner';
 import Alert from './Components/ui/alert';
 
-export interface Coords {
+interface Coords {
     lng: number;
     lat: number;
 }
 interface Prop {
     userCoords: Coords;
     radius: any;
-    clientId: string;
-    clientSecret: string;
+    clientId: string | undefined;
+    clientSecret: string | undefined;
     hospitalData: [];
     hosptName: string;
     geoError: boolean;
@@ -30,14 +30,19 @@ class App extends Component<{}, Prop> {
             userCoords: { lng: 0, lat: 0 },
             hospitalData: [],
             radius: 3000,
-            clientId: 'LN0ZJJGKI2FVCFDBKHV1KA2CREY2WJVOZT55WH2BWYSF2PXP',
-            clientSecret: '33PMHSOCZJSFYC33MFTFXGYHHESIRM0TCJVQPS5UJ3QXS253',
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
             hosptName: '',
             geoError: false,
             message: '',
         };
     }
     async componentDidMount() {
+        console.log(
+            process.env.MAPBOX_TOKEN,
+            process.env.CLIENT_SECRET,
+            process.env.CLIENT_ID
+        );
         const geo = navigator.geolocation;
         if (!geo) console.log('Geolocation is not supported');
         geo.getCurrentPosition(

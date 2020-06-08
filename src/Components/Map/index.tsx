@@ -26,8 +26,6 @@ const MapContainer: FC<Props> = ({ hospitalData, userCoords }) => {
         mapContainer: createRef<HTMLDivElement>(),
     });
     useEffect((): void => {
-        console.log('hosp', hospitalData);
-        console.log('user', userCoords);
         const map = new mapboxgl.Map({
             container: mapData.mapContainer.current!,
             style: 'mapbox://styles/oluwatobi16/ckb464qtk18281jqoox4e7gtw',
@@ -40,7 +38,6 @@ const MapContainer: FC<Props> = ({ hospitalData, userCoords }) => {
 
         hospitalData.forEach(
             (el: any) => {
-                console.log([el.lng, el.lat]);
                 const htmlEl = document.createElement('div');
                 htmlEl.className = 'marker';
                 new mapboxgl.Marker({
@@ -49,7 +46,6 @@ const MapContainer: FC<Props> = ({ hospitalData, userCoords }) => {
                 })
                     .setLngLat([el.lng, el.lat])
                     .addTo(map);
-                console.log([el.lng, el.lat]);
                 new mapboxgl.Popup({
                     offset: 40,
                 })
