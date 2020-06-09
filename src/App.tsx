@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, FC, useEffect, useState } from 'react';
 import Navbar from './Components/Navbar';
 import Map from './Components/Map';
 import Cards from './Components/HosptCards';
@@ -7,176 +7,114 @@ import { Layout, Select, Form } from 'antd';
 import { fetchHospital } from './util/fetchHospitals';
 import Spinner from './Components/ui/spinner';
 import Alert from './Components/ui/alert';
-import Variables from './keys';
 
 interface Coords {
     lng: number;
     lat: number;
 }
-interface Prop {
+interface StateInterface {
+    message: string;
     userCoords: Coords;
     radius: any;
-    clientId: string;
-    clientSecret: string;
     hospitalData: [];
     hosptName: string;
     geoError: boolean;
-    message: string;
 }
 
-class App extends Component<{}, Prop> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            userCoords: { lng: 0, lat: 0 },
-            hospitalData: [],
-            radius: 5000,
-            clientId: Variables.CLIENT_ID,
-            clientSecret: Variables.CLIENT_SECRETE,
-            hosptName: '',
-            geoError: false,
-            message: '',
-        };
-    }
-    async componentDidMount() {
-        console.log(
-            Variables.MAPBOX_TOKEN,
-            Variables.CLIENT_SECRETE,
-            Variables.CLIENT_ID
-        );
+const App: FC = () => {
+    const [state, setState] = useState<StateInterface>({
+        userCoords: { lng: 0, lat: 0 },
+        hospitalData: [],
+        radius: 5000,
+        hosptName: '',
+        geoError: false,
+        message: '',
+    });
+    useEffect(() => {
         const geo = navigator.geolocation;
-        if (!geo) console.log('Geolocation is not supported');
+        if (!geo)
+            setState((s) => ({
+                ...s,
+                message: 'Geolocation is not supported',
+            }));
         geo.getCurrentPosition(
             async (position) => {
                 const hospitals = await fetchHospital(
                     position.coords.longitude,
                     position.coords.latitude,
-                    this.state.radius
+                    state.radius
                 );
                 if (hospitals.length > 0) {
                     const hosptData: any = hospitals.map((el: any) => {
-                        console.log(el);
                         return { name: el.name, ...el.location };
                     });
 
-                    this.setState({
-                        hospitalData: hosptData,
-                    });
-                    this.setState({
+                    setState((s) => ({ ...s, hospitalData: hosptData }));
+                    setState((s) => ({
+                        ...s,
                         userCoords: {
                             lng: position.coords.longitude,
                             lat: position.coords.latitude,
                         },
-                    });
+                    }));
                 } else {
-                    this.setState({
+                    setState((s) => ({
+                        ...s,
                         message: 'No hospital found within this range',
-                    });
+                    }));
                 }
             },
             (error: any) => {
-                this.setState({
+                setState((s) => ({
+                    ...s,
                     message:
                         'Unable to get your current location please, refresh this page or user another browser ',
-                });
+                }));
             }
         );
-    }
-    componentDidUpdate(prevProps: any, prevState: any) {
-        if (prevState.radius !== this.state.radius) {
-            const geo = navigator.geolocation;
-            if (!geo) console.log('Geolocation is not supported');
-            geo.getCurrentPosition(
-                async (position) => {
-                    const hospitals = await fetchHospital(
-                        position.coords.longitude,
-                        position.coords.latitude,
-                        this.state.radius
-                    );
-                    if (hospitals.length > 0) {
-                        const hosptData: any = hospitals.map((el: any) => {
-                            console.log(el);
-                            return { name: el.name, ...el.location };
-                        });
-
-                        this.setState({
-                            hospitalData: hosptData,
-                        });
-                        this.setState({
-                            userCoords: {
-                                lng: position.coords.longitude,
-                                lat: position.coords.latitude,
-                            },
-                        });
-                    } else {
-                        this.setState({
-                            message: 'No hospital found within this range',
-                        });
-                    }
-                },
-                (error: any) => {
-                    this.setState({
-                        message:
-                            'Unable to get your current location please, refresh this page or user another browser ',
-                    });
-                }
-            );
-        }
-    }
-    render<Rc>() {
-        return (
-            <div className="App">
-                <Layout>
-                    <Navbar />
-                    {this.state.userCoords.lat !== 0 ? (
-                        <Fragment>
-                            <Map
-                                hospitalData={this.state.hospitalData}
-                                userCoords={this.state.userCoords}
-                            />
-                            <Cards hospitalData={this.state.hospitalData} />
-                        </Fragment>
-                    ) : this.state.message ? (
-                        <Alert
-                            message="Error Message"
-                            description={this.state.message}
+    }, [state.radius]);
+    return (
+        <div className="App">
+            <Layout>
+                <Navbar />
+                {state.userCoords.lat !== 0 ? (
+                    <Fragment>
+                        <Map
+                            hospitalData={state.hospitalData}
+                            userCoords={state.userCoords}
                         />
-                    ) : (
-                        <Spinner />
-                    )}
-                    <div className="select-km">
-                        <Form.Item>
-                            <Select
-                                onChange={(val) =>
-                                    this.setState({ radius: val })
-                                }
-                                placeholder="Distance away"
-                            >
-                                <Select.Option value="" disabled>
-                                    Select kilometer
-                                </Select.Option>
-                                <Select.Option value={'1000'}>
-                                    10km
-                                </Select.Option>
-                                <Select.Option value={'2000'}>
-                                    20km
-                                </Select.Option>
-                                <Select.Option value={'3000'}>
-                                    30km
-                                </Select.Option>
-                                <Select.Option value={'4000'}>
-                                    40km
-                                </Select.Option>
-                                <Select.Option value={'5000'}>
-                                    50km
-                                </Select.Option>
-                            </Select>
-                        </Form.Item>
-                    </div>
-                </Layout>
-            </div>
-        );
-    }
-}
+                        <Cards hospitalData={state.hospitalData} />
+                    </Fragment>
+                ) : state.message ? (
+                    <Alert
+                        message="Error Message"
+                        description={state.message}
+                    />
+                ) : (
+                    <Spinner />
+                )}
+                <div className="select-km">
+                    <Form.Item>
+                        <Select
+                            onChange={(val) =>
+                                setState({ ...state, radius: val })
+                            }
+                            placeholder="Distance away"
+                        >
+                            <Select.Option value="" disabled>
+                                Select kilometer
+                            </Select.Option>
+                            <Select.Option value={'1000'}>10km</Select.Option>
+                            <Select.Option value={'2000'}>20km</Select.Option>
+                            <Select.Option value={'3000'}>30km</Select.Option>
+                            <Select.Option value={'4000'}>40km</Select.Option>
+                            <Select.Option value={'5000'}>50km</Select.Option>
+                        </Select>
+                    </Form.Item>
+                </div>
+            </Layout>
+        </div>
+    );
+};
 
 export default App;

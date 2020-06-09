@@ -33,7 +33,7 @@ const CardComponent: FC<Props> = ({ cardData }) => {
                 ${cardData.formattedAddress[2]}`}
                 </p>
                 <p>
-                    <b>Distance: </b> {Math.floor(cardData.distance)}
+                    <b>Distance: </b> {Math.floor(cardData.distance / 100)}
                     {''}
                     km away
                 </p>
