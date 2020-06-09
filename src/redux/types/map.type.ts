@@ -1,0 +1,6 @@
+export const STORE_MAP_DATA = 'STORE_MAP_DATA';
+export const FETCH_MAP_DATA = 'FETCH_MAP_DATA';
+export const CHANGE_RADIUS = 'CHANGE_RADIUS';
+export const SET_USER_COORDS = 'SET_USER_COORDS';
+export const SET_MESSAGE = 'SET_MESSAGE';
+export const CLEAR_MESSAGE = 'CLEAR_MESSAGE';

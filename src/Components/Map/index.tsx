@@ -13,13 +13,12 @@ interface Coords {
 }
 
 interface Props {
-    userCoords: Coords;
-    hospitalData: [];
+    hospitalData: any[];
 }
 const token = variables.MAPBOX_TOKEN;
 mapboxgl.accessToken = token;
 
-const MapContainer: FC<Props> = ({ hospitalData, userCoords }) => {
+const MapContainer: FC<Props> = ({ hospitalData }) => {
     const [mapData] = useState({
         zoom: 5,
         mapContainer: createRef<HTMLDivElement>(),

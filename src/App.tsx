@@ -1,120 +1,66 @@
-import React, { Fragment, FC, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Navbar from './Components/Navbar';
 import Map from './Components/Map';
 import Cards from './Components/HosptCards';
 import './App.css';
-import { Layout, Select, Form } from 'antd';
-import { fetchHospital } from './util/fetchHospitals';
+import { Layout } from 'antd';
 import Spinner from './Components/ui/spinner';
 import Alert from './Components/ui/alert';
+import { connect, ConnectedProps } from 'react-redux';
+import { StateInter } from './interfaces/Global';
+import { fetchMapData, setMessage } from './redux/actions/map.acton';
+import SelectKm from './Components/ui/selectKM';
+import GoogleButton from 'react-google-button';
+import { signInWithGoogle } from './firebase/firebase.util';
 
-interface Coords {
-    lng: number;
-    lat: number;
-}
 interface StateInterface {
     message: string;
-    userCoords: Coords;
-    radius: any;
-    hospitalData: [];
-    hosptName: string;
+    radius: number;
+    hospitalData: any[];
     geoError: boolean;
 }
+const MapStateToProps = (state: StateInter) => ({
+    mapData: state.map.mapData,
+    radius: state.map.radius,
+    userCoords: state.map.userCoords,
+    message: state.map.message,
+});
 
-const App: FC = () => {
-    const [state, setState] = useState<StateInterface>({
-        userCoords: { lng: 0, lat: 0 },
-        hospitalData: [],
-        radius: 5000,
-        hosptName: '',
-        geoError: false,
-        message: '',
-    });
+const MapDispatchToProp = (dispatch: Function) => ({
+    fetchMapData: (data: number) => dispatch(fetchMapData(data)),
+    setMessage: (data: string) => dispatch(setMessage(data)),
+});
+const connector = connect(MapStateToProps, MapDispatchToProp);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type Props = PropsFromRedux;
+
+const App = (props: Props) => {
+    const { mapData, fetchMapData, radius, message } = props;
+
     useEffect(() => {
-        const geo = navigator.geolocation;
-        if (!geo)
-            setState((s) => ({
-                ...s,
-                message: 'Geolocation is not supported',
-            }));
-        geo.getCurrentPosition(
-            async (position) => {
-                const hospitals = await fetchHospital(
-                    position.coords.longitude,
-                    position.coords.latitude,
-                    state.radius
-                );
-                if (hospitals.length > 0) {
-                    const hosptData: any = hospitals.map((el: any) => {
-                        return { name: el.name, ...el.location };
-                    });
-
-                    setState((s) => ({ ...s, hospitalData: hosptData }));
-                    setState((s) => ({
-                        ...s,
-                        userCoords: {
-                            lng: position.coords.longitude,
-                            lat: position.coords.latitude,
-                        },
-                    }));
-                } else {
-                    setState((s) => ({
-                        ...s,
-                        message: 'No hospital found within this range',
-                    }));
-                }
-            },
-            (error: any) => {
-                setState((s) => ({
-                    ...s,
-                    message:
-                        'Unable to get your current location please, refresh this page or user another browser ',
-                }));
-            }
-        );
-    }, [state.radius]);
+        console.log(radius);
+        fetchMapData(radius);
+    }, [fetchMapData, radius]);
     return (
         <div className="App">
             <Layout>
                 <Navbar />
-                {state.userCoords.lat !== 0 ? (
+                {props.mapData.length > 0 ? (
                     <Fragment>
-                        <Map
-                            hospitalData={state.hospitalData}
-                            userCoords={state.userCoords}
-                        />
-                        <Cards hospitalData={state.hospitalData} />
+                        <Map hospitalData={mapData} />
+                        <Cards hospitalData={mapData} />
                     </Fragment>
-                ) : state.message ? (
-                    <Alert
-                        message="Error Message"
-                        description={state.message}
-                    />
+                ) : message ? (
+                    <Alert message="Error Message" description={message} />
                 ) : (
                     <Spinner />
                 )}
-                <div className="select-km">
-                    <Form.Item>
-                        <Select
-                            onChange={(val) =>
-                                setState({ ...state, radius: val })
-                            }
-                            placeholder="Distance away"
-                        >
-                            <Select.Option value="" disabled>
-                                Select kilometer
-                            </Select.Option>
-                            <Select.Option value={'1000'}>10km</Select.Option>
-                            <Select.Option value={'2000'}>20km</Select.Option>
-                            <Select.Option value={'3000'}>30km</Select.Option>
-                            <Select.Option value={'4000'}>40km</Select.Option>
-                            <Select.Option value={'5000'}>50km</Select.Option>
-                        </Select>
-                    </Form.Item>
-                </div>
+                <SelectKm />
+                <GoogleButton onClick={signInWithGoogle} />
             </Layout>
         </div>
     );
 };
 
-export default App;
+export default connector(App);

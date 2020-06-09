@@ -4,7 +4,7 @@ import Card from './ui/card';
 import { Row, Col } from 'antd';
 
 interface Props {
-    hospitalData: [];
+    hospitalData: any[];
 }
 
 interface Cardinterface {
