@@ -14,4 +14,5 @@ interface MapInterface {
     userCoords: { lng: number; lat: number };
     message: string;
     category: string;
+    loading: boolean;
 }

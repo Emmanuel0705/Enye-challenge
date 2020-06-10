@@ -5,6 +5,8 @@ import {
     SET_MESSAGE,
     CLEAR_MESSAGE,
     CHANGE_CATEGORY,
+    SET_LOADER,
+    CLEAR_LOADER,
 } from '../types/map.type';
 
 interface INIT_STATE {
@@ -13,6 +15,7 @@ interface INIT_STATE {
     radius: number;
     message: string;
     category: string;
+    loading: boolean;
 }
 const INITIAL_STATE: INIT_STATE = {
     mapData: [],
@@ -20,6 +23,7 @@ const INITIAL_STATE: INIT_STATE = {
     radius: 3000,
     message: '',
     category: 'hospital',
+    loading: false,
 };
 
 const mapReducer = (state = INITIAL_STATE, action: any) => {
@@ -42,6 +46,10 @@ const mapReducer = (state = INITIAL_STATE, action: any) => {
             return { ...state, message: '' };
         case CHANGE_CATEGORY:
             return { ...state, category: action.payload };
+        case SET_LOADER:
+            return { ...state, loading: true };
+        case CLEAR_LOADER:
+            return { ...state, loading: false };
         default:
             return state;
     }

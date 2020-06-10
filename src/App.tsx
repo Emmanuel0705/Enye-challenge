@@ -14,6 +14,7 @@ import {
     fetchMapData,
     setMessage,
     clearMessage,
+    setLoader,
 } from './redux/actions/map.acton';
 import SelectKm from './Components/ui/selectKM';
 import SignIn from './Components/auth';
@@ -29,6 +30,7 @@ const MapStateToProps = (state: StateInter) => ({
     userCoords: state.map.userCoords,
     message: state.map.message,
     category: state.map.category,
+    loading: state.map.loading,
 });
 
 const MapDispatchToProp = (dispatch: Function) => ({
@@ -36,6 +38,7 @@ const MapDispatchToProp = (dispatch: Function) => ({
         dispatch(fetchMapData(radius, category)),
     setMessage: (data: string) => dispatch(setMessage(data)),
     clearMessage: () => dispatch(clearMessage()),
+    setLoader: () => dispatch(setLoader()),
 });
 const connector = connect(MapStateToProps, MapDispatchToProp);
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -50,6 +53,8 @@ const App = (props: Props) => {
         message,
         clearMessage,
         category,
+        loading,
+        setLoader,
     } = props;
 
     const [state, setState] = useState<StateInterface>({
@@ -71,6 +76,7 @@ const App = (props: Props) => {
 
     useEffect(() => {
         clearMessage();
+        setLoader();
         // auth.signOut();
         checkAuth();
 
@@ -83,15 +89,15 @@ const App = (props: Props) => {
             {state.loggedIn ? (
                 <Layout>
                     <Navbar />
-                    {props.mapData.length > 0 ? (
+                    {loading ? (
+                        <Spinner />
+                    ) : props.mapData.length > 0 ? (
                         <Fragment>
                             <Map hospitalData={mapData} />
                             <Cards hospitalData={mapData} />
                         </Fragment>
-                    ) : message ? (
-                        <Alert message="Error Message" description={message} />
                     ) : (
-                        <Spinner />
+                        <Alert message="Error Message" description={message} />
                     )}
                     <Fragment>
                         <SelectKm />

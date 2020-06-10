@@ -5,6 +5,8 @@ import {
     SET_MESSAGE,
     CLEAR_MESSAGE,
     CHANGE_CATEGORY,
+    CLEAR_LOADER,
+    SET_LOADER,
 } from '../types/map.type';
 import fetchHospital from '../../util/fetchHospitals';
 
@@ -21,6 +23,7 @@ export const fetchMapData = (radius: number, cat: string) => async (
     dispatch: Function
 ) => {
     if (!navigator.onLine) {
+        dispatch(clearLoader());
         return dispatch(
             setMessage(
                 'No Internet connection, pls check your connect and try again and try again'
@@ -28,25 +31,29 @@ export const fetchMapData = (radius: number, cat: string) => async (
         );
     }
     if (!navigator.geolocation) {
+        dispatch(clearLoader());
         return dispatch(setMessage('Geolocation is not supported'));
     }
-
     navigator.geolocation.getCurrentPosition(
         async (position) => {
             const lng = position.coords.longitude;
             const lat = position.coords.latitude;
             const res = await fetchHospital(lng, lat, radius, cat);
             if (res.length > 0 && res[0] !== 'error') {
+                dispatch(clearLoader());
                 return dispatch(storeMapData(res));
             }
-            if (res.length === 0)
+            if (res.length === 0) {
+                dispatch(clearLoader());
                 return dispatch(
                     setMessage('No Hospital found within this range')
                 );
+            }
             if (res[0] === 'error') {
+                dispatch(clearLoader());
                 return dispatch(setMessage(res[1]));
             }
-
+            dispatch(clearLoader());
             // console.log(res);
         },
         (error) => {
@@ -97,3 +104,9 @@ export const clearMessage = (): Object => async (dispatch: Function) => {
         type: CLEAR_MESSAGE,
     });
 };
+export const clearLoader = () => ({
+    type: CLEAR_LOADER,
+});
+export const setLoader = () => ({
+    type: SET_LOADER,
+});
