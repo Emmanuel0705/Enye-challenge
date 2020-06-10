@@ -33,9 +33,35 @@
     padding: 100px 10px;
 }
 .select-km {
-    width: 50%;
+    width: 45%;
+    position: absolute;
+    top: 12%;
+    background: transparent;
+    right: 1%;
+}
+.select-cat {
+    width: 45%;
     position: absolute;
     top: 12%;
     background: transparent;
     left: 1%;
+}
+.google-btn {
+    width: 100%;
+    /* margin: auto; */
+    padding-top: 150px;
+    text-align: center;
+}
+.writer-b {
+    font-size: 18px;
+    text-align: center;
+    text-align: center;
+}
+.writer-p {
+    font-size: 16px;
+    margin: 20px;
+}
+.google-btn .btn {
+    width: 100%;
+    margin: auto;
 }

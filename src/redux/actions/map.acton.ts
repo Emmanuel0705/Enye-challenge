@@ -3,6 +3,8 @@ import {
     CHANGE_RADIUS,
     SET_USER_COORDS,
     SET_MESSAGE,
+    CLEAR_MESSAGE,
+    CHANGE_CATEGORY,
 } from '../types/map.type';
 import fetchHospital from '../../util/fetchHospitals';
 
@@ -15,25 +17,34 @@ export const storeMapData = (mapdata: any[]): Object => async (
     });
 };
 
-export const fetchMapData = (radius: number) => async (dispatch: Function) => {
+export const fetchMapData = (radius: number, cat: string) => async (
+    dispatch: Function
+) => {
+    if (!navigator.onLine) {
+        return dispatch(
+            setMessage(
+                'No Internet connection, pls check your connect and try again and try again'
+            )
+        );
+    }
     if (!navigator.geolocation) {
-        return dispatch(setMessage("'Geolocation is not supported'"));
+        return dispatch(setMessage('Geolocation is not supported'));
     }
 
     navigator.geolocation.getCurrentPosition(
         async (position) => {
-            console.log(123);
             const lng = position.coords.longitude;
             const lat = position.coords.latitude;
-            const res = await fetchHospital(lng, lat, radius);
+            const res = await fetchHospital(lng, lat, radius, cat);
             if (res.length > 0 && res[0] !== 'error') {
-                console.log(res);
-                dispatch(storeMapData(res));
+                return dispatch(storeMapData(res));
             }
             if (res.length === 0)
-                dispatch(setMessage('No Hospital found within this range'));
+                return dispatch(
+                    setMessage('No Hospital found within this range')
+                );
             if (res[0] === 'error') {
-                dispatch(setMessage(res[1]));
+                return dispatch(setMessage(res[1]));
             }
 
             // console.log(res);
@@ -56,6 +67,14 @@ export const changeRadius = (data: number): Object => async (
         payload: data,
     });
 };
+export const changeCategory = (data: string): Object => async (
+    dispatch: Function
+) => {
+    dispatch({
+        type: CHANGE_CATEGORY,
+        payload: data,
+    });
+};
 
 export const setUserCoords = (data: any[]): Object => async (
     dispatch: Function
@@ -71,5 +90,10 @@ export const setMessage = (data: string): Object => async (
     dispatch({
         type: SET_MESSAGE,
         payload: data,
+    });
+};
+export const clearMessage = (): Object => async (dispatch: Function) => {
+    dispatch({
+        type: CLEAR_MESSAGE,
     });
 };

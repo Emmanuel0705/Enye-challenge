@@ -4,3 +4,4 @@ export const CHANGE_RADIUS = 'CHANGE_RADIUS';
 export const SET_USER_COORDS = 'SET_USER_COORDS';
 export const SET_MESSAGE = 'SET_MESSAGE';
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE';
+export const CHANGE_CATEGORY = 'CHANGE_CATEGORY';

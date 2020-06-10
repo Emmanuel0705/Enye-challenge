@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Navbar from './Components/Navbar';
 import Map from './Components/Map';
 import Cards from './Components/HosptCards';
@@ -8,27 +8,34 @@ import Spinner from './Components/ui/spinner';
 import Alert from './Components/ui/alert';
 import { connect, ConnectedProps } from 'react-redux';
 import { StateInter } from './interfaces/Global';
-import { fetchMapData, setMessage } from './redux/actions/map.acton';
+import SelectCategory from './Components/ui/selectCat';
+
+import {
+    fetchMapData,
+    setMessage,
+    clearMessage,
+} from './redux/actions/map.acton';
 import SelectKm from './Components/ui/selectKM';
-import GoogleButton from 'react-google-button';
-import { signInWithGoogle } from './firebase/firebase.util';
+import SignIn from './Components/auth';
+import { signInWithGoogle, auth } from './firebase/firebase.util';
 
 interface StateInterface {
-    message: string;
-    radius: number;
-    hospitalData: any[];
-    geoError: boolean;
+    loggedIn: boolean;
+    hasCheckAuth: string;
 }
 const MapStateToProps = (state: StateInter) => ({
     mapData: state.map.mapData,
     radius: state.map.radius,
     userCoords: state.map.userCoords,
     message: state.map.message,
+    category: state.map.category,
 });
 
 const MapDispatchToProp = (dispatch: Function) => ({
-    fetchMapData: (data: number) => dispatch(fetchMapData(data)),
+    fetchMapData: (radius: number, category: string) =>
+        dispatch(fetchMapData(radius, category)),
     setMessage: (data: string) => dispatch(setMessage(data)),
+    clearMessage: () => dispatch(clearMessage()),
 });
 const connector = connect(MapStateToProps, MapDispatchToProp);
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -36,29 +43,66 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type Props = PropsFromRedux;
 
 const App = (props: Props) => {
-    const { mapData, fetchMapData, radius, message } = props;
+    const {
+        mapData,
+        fetchMapData,
+        radius,
+        message,
+        clearMessage,
+        category,
+    } = props;
+
+    const [state, setState] = useState<StateInterface>({
+        loggedIn: false,
+        hasCheckAuth: 'default',
+    });
+    const checkAuth = (): any => {
+        setState({ ...state, hasCheckAuth: 'checking' });
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                setState({ ...state, loggedIn: true });
+                return true;
+            }
+
+            setState({ ...state, hasCheckAuth: 'fail' });
+            return false;
+        });
+    };
 
     useEffect(() => {
-        console.log(radius);
-        fetchMapData(radius);
-    }, [fetchMapData, radius]);
+        clearMessage();
+        // auth.signOut();
+        checkAuth();
+
+        if (state.loggedIn) {
+            fetchMapData(radius, category);
+        }
+    }, [fetchMapData, radius, clearMessage, state.loggedIn, category]);
     return (
         <div className="App">
-            <Layout>
-                <Navbar />
-                {props.mapData.length > 0 ? (
+            {state.loggedIn ? (
+                <Layout>
+                    <Navbar />
+                    {props.mapData.length > 0 ? (
+                        <Fragment>
+                            <Map hospitalData={mapData} />
+                            <Cards hospitalData={mapData} />
+                        </Fragment>
+                    ) : message ? (
+                        <Alert message="Error Message" description={message} />
+                    ) : (
+                        <Spinner />
+                    )}
                     <Fragment>
-                        <Map hospitalData={mapData} />
-                        <Cards hospitalData={mapData} />
+                        <SelectKm />
+                        <SelectCategory />
                     </Fragment>
-                ) : message ? (
-                    <Alert message="Error Message" description={message} />
-                ) : (
-                    <Spinner />
-                )}
-                <SelectKm />
-                <GoogleButton onClick={signInWithGoogle} />
-            </Layout>
+                </Layout>
+            ) : state.hasCheckAuth === 'fail' ? (
+                <SignIn onClick={signInWithGoogle} />
+            ) : (
+                <Spinner />
+            )}
         </div>
     );
 };

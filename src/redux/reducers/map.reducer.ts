@@ -4,6 +4,7 @@ import {
     SET_USER_COORDS,
     SET_MESSAGE,
     CLEAR_MESSAGE,
+    CHANGE_CATEGORY,
 } from '../types/map.type';
 
 interface INIT_STATE {
@@ -11,12 +12,14 @@ interface INIT_STATE {
     userCoords: { lng: number; lat: number };
     radius: number;
     message: string;
+    category: string;
 }
 const INITIAL_STATE: INIT_STATE = {
     mapData: [],
     userCoords: { lng: 0, lat: 0 },
     radius: 3000,
     message: '',
+    category: 'hospital',
 };
 
 const mapReducer = (state = INITIAL_STATE, action: any) => {
@@ -37,6 +40,8 @@ const mapReducer = (state = INITIAL_STATE, action: any) => {
             return { ...state, message: action.payload };
         case CLEAR_MESSAGE:
             return { ...state, message: '' };
+        case CHANGE_CATEGORY:
+            return { ...state, category: action.payload };
         default:
             return state;
     }

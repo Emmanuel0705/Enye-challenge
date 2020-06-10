@@ -13,4 +13,5 @@ interface MapInterface {
     radius: number;
     userCoords: { lng: number; lat: number };
     message: string;
+    category: string;
 }
