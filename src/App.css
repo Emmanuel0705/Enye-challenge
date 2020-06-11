@@ -1,7 +1,7 @@
 @import '~antd/dist/antd.css';
 
 .logo {
-    width: 150px;
+    width: 50%;
     float: left;
     color: white;
     text-shadow: 2px 3px 6px #000;
@@ -52,16 +52,17 @@
     padding-top: 150px;
     text-align: center;
 }
+.tab-section {
+    padding: 20px;
+}
+.result {
+    text-align: right;
+    float: right;
+    width: 50%;
+}
+.writer {
+    padding: 40px;
+}
 .writer-b {
-    font-size: 18px;
-    text-align: center;
-    text-align: center;
-}
-.writer-p {
-    font-size: 16px;
-    margin: 20px;
-}
-.google-btn .btn {
-    width: 100%;
-    margin: auto;
+    margin-bottom: 30px;
 }

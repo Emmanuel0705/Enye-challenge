@@ -15,4 +15,5 @@ interface MapInterface {
     message: string;
     category: string;
     loading: boolean;
+    viewResult: boolean;
 }

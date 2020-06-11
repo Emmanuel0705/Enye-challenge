@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Navbar from './Components/Navbar';
 import Map from './Components/Map';
 import Cards from './Components/HosptCards';
@@ -9,6 +9,7 @@ import Alert from './Components/ui/alert';
 import { connect, ConnectedProps } from 'react-redux';
 import { StateInter } from './interfaces/Global';
 import SelectCategory from './Components/ui/selectCat';
+import Tabs from './Components/ui/tab';
 
 import {
     fetchMapData,
@@ -17,12 +18,11 @@ import {
     setLoader,
 } from './redux/actions/map.acton';
 import SelectKm from './Components/ui/selectKM';
-import SignIn from './Components/auth';
-import { signInWithGoogle, auth } from './firebase/firebase.util';
 
 interface StateInterface {
     loggedIn: boolean;
     hasCheckAuth: string;
+    userData: { id: string; email: string };
 }
 const MapStateToProps = (state: StateInter) => ({
     mapData: state.map.mapData,
@@ -31,6 +31,7 @@ const MapStateToProps = (state: StateInter) => ({
     message: state.map.message,
     category: state.map.category,
     loading: state.map.loading,
+    viewResult: state.map.viewResult,
 });
 
 const MapDispatchToProp = (dispatch: Function) => ({
@@ -55,60 +56,43 @@ const App = (props: Props) => {
         category,
         loading,
         setLoader,
+        viewResult,
     } = props;
-
-    const [state, setState] = useState<StateInterface>({
-        loggedIn: false,
-        hasCheckAuth: 'default',
-    });
-    const checkAuth = (): any => {
-        setState({ ...state, hasCheckAuth: 'checking' });
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                setState({ ...state, loggedIn: true });
-                return true;
-            }
-
-            setState({ ...state, hasCheckAuth: 'fail' });
-            return false;
-        });
-    };
 
     useEffect(() => {
         clearMessage();
         setLoader();
-        // auth.signOut();
-        checkAuth();
-
-        if (state.loggedIn) {
-            fetchMapData(radius, category);
-        }
-    }, [fetchMapData, radius, clearMessage, state.loggedIn, category]);
+        fetchMapData(radius, category);
+    }, [fetchMapData, radius, clearMessage, category]);
     return (
         <div className="App">
-            {state.loggedIn ? (
-                <Layout>
-                    <Navbar />
-                    {loading ? (
-                        <Spinner />
-                    ) : props.mapData.length > 0 ? (
-                        <Fragment>
-                            <Map hospitalData={mapData} />
-                            <Cards hospitalData={mapData} />
-                        </Fragment>
-                    ) : (
-                        <Alert message="Error Message" description={message} />
-                    )}
+            <Layout>
+                {/* {loc.url} */}
+                <Navbar />
+                {viewResult ? (
+                    <Tabs />
+                ) : (
                     <Fragment>
-                        <SelectKm />
-                        <SelectCategory />
+                        {loading ? (
+                            <Spinner />
+                        ) : props.mapData.length > 0 ? (
+                            <Fragment>
+                                <Map hospitalData={mapData} />
+                                <Cards hospitalData={mapData} />
+                            </Fragment>
+                        ) : (
+                            <Alert
+                                message="Error Message"
+                                description={message}
+                            />
+                        )}
+                        <Fragment>
+                            <SelectKm />
+                            <SelectCategory />
+                        </Fragment>
                     </Fragment>
-                </Layout>
-            ) : state.hasCheckAuth === 'fail' ? (
-                <SignIn onClick={signInWithGoogle} />
-            ) : (
-                <Spinner />
-            )}
+                )}
+            </Layout>
         </div>
     );
 };

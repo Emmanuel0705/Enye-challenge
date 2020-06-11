@@ -7,6 +7,13 @@ import {
     CHANGE_CATEGORY,
     SET_LOADER,
     CLEAR_LOADER,
+    CLEAR_MAP_DATA,
+    VIEW_RESULTS,
+    CLEAR_RESULT,
+    STORE_HOSPITALS,
+    STORE_CLINICS,
+    STORE_MEDICALS,
+    STORE_PHARMACIES,
 } from '../types/map.type';
 
 interface INIT_STATE {
@@ -16,6 +23,11 @@ interface INIT_STATE {
     message: string;
     category: string;
     loading: boolean;
+    viewResult: boolean;
+    hospitals: any[];
+    clinics: any[];
+    pharmacies: any[];
+    medicals: any[];
 }
 const INITIAL_STATE: INIT_STATE = {
     mapData: [],
@@ -24,6 +36,11 @@ const INITIAL_STATE: INIT_STATE = {
     message: '',
     category: 'hospital',
     loading: false,
+    viewResult: false,
+    hospitals: [],
+    clinics: [],
+    pharmacies: [],
+    medicals: [],
 };
 
 const mapReducer = (state = INITIAL_STATE, action: any) => {
@@ -50,6 +67,20 @@ const mapReducer = (state = INITIAL_STATE, action: any) => {
             return { ...state, loading: true };
         case CLEAR_LOADER:
             return { ...state, loading: false };
+        case CLEAR_MAP_DATA:
+            return { ...state, mapData: [] };
+        case VIEW_RESULTS:
+            return { ...state, viewResult: true };
+        case CLEAR_RESULT:
+            return { ...state, viewResult: false };
+        case STORE_HOSPITALS:
+            return { ...state, hospitals: action.payload };
+        case STORE_CLINICS:
+            return { ...state, clinics: action.payload };
+        case STORE_MEDICALS:
+            return { ...state, medicals: action.payload };
+        case STORE_PHARMACIES:
+            return { ...state, pharmacies: action.payload };
         default:
             return state;
     }
