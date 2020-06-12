@@ -17,7 +17,7 @@
     height: 400px;
 }
 .marker {
-    background-image: url('./Components/Map/marker.png');
+    background-image: url('./Components/Map/marker-icon.png');
     background-size: cover;
     width: 25px;
     height: 40px;
