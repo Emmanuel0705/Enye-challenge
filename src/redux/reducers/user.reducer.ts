@@ -12,7 +12,6 @@ const userReducer = (state = INITIAL_STATE, action: any) => {
         case STORE_USER_DATA:
             return { ...state, userData: action.payload };
         case CLEAR_USER_DATA:
-        case STORE_USER_DATA:
             return { ...state, userData: {} };
         default:
             return state;

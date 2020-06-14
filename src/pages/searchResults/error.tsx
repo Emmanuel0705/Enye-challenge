@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Alert } from 'antd';
 import { connect, ConnectedProps } from 'react-redux';
 import { StateInter } from '../../interfaces/Global';

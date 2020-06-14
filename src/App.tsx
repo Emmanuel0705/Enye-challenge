@@ -10,14 +10,7 @@ import Main from './pages/Main/index';
 import Spinner from './Components/ui/spinner';
 import Alert from './Components/ui/alert';
 
-import {
-    fetchMapData,
-    setMessage,
-    clearMessage,
-    setLoader,
-    clearLoader,
-    setUserCoords,
-} from './redux/actions/map.acton';
+import { setUserCoords } from './redux/actions/map.acton';
 
 const MapStateToProps = (state: StateInter) => ({
     msg: state.map.message,

@@ -7,6 +7,8 @@ import { StateInter } from '../../interfaces/Global';
 import { connect, ConnectedProps } from 'react-redux';
 import { setMessage } from '../../redux/actions/map.acton';
 import { getCategoryId } from '../../util/getCategoryId';
+import { addLocation } from '../../firebase/firebase.util';
+import { dbObj } from '../../interfaces/Global';
 
 const MapStateToProps = (state: StateInter) => ({
     user: state.user.userData,
@@ -24,15 +26,14 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type Props = PropsFromRedux;
 
 const CardData = (props: Props) => {
-    const { id } = props.user;
-    const { setError, radius, category, coords } = props;
+    const { setError, radius, category, coords, user } = props;
     const catId = getCategoryId(category);
 
     const SEARCH_RESULT = gql`
         {
             FetchMapData(
                 lat: "${coords.lat}"
-                lng: "${coords.lat}"
+                lng: "${coords.lng}"
                 radius: "${radius}"
                 categoryId: "${catId}"
             ) {
@@ -50,12 +51,6 @@ const CardData = (props: Props) => {
     const { loading, error, data } = useQuery(SEARCH_RESULT);
 
     useEffect(() => {
-        console.log(radius, category, coords);
-        if (coords.lat === 0 && coords.lng === 0) {
-            setError(
-                'Unable to access your current location, pls try to refresh this page and allow location access '
-            );
-        }
         if (error) {
             setError(
                 'Unable to Fetch Data, Pls check your internet connection and try again '
@@ -70,6 +65,23 @@ const CardData = (props: Props) => {
             if (data && data.FetchMapData[0].name === null)
                 setError(
                     'Unable to Fetch Data, Pls check your internet connection and try again '
+                );
+        }
+
+        // store user data
+        if (data && data.FetchMapData.length > 0) {
+            if (data.FetchMapData[0].name !== null)
+                addLocation(
+                    `${category}s`,
+                    user.id,
+                    data.FetchMapData.map((data: dbObj) => {
+                        return {
+                            userId: user.id,
+                            formattedAddress: data.formattedAddress,
+                            distance: data.distance,
+                            name: data.name,
+                        };
+                    })
                 );
         }
     }, [data, error]);

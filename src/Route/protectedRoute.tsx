@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { StateInter } from '../interfaces/Global';
 import { connect, ConnectedProps } from 'react-redux';

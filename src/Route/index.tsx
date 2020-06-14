@@ -3,7 +3,7 @@ import App from '../App';
 import PrivateRoute from './protectedRoute';
 import Auth from '../pages/Auth';
 import ResultPage from '../pages/searchResults';
-import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { Layout } from '../Components/Layout';
 
 const ResultPageWithLayout = () => <Layout Component={ResultPage} />;

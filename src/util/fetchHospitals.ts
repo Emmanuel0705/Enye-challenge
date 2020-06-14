@@ -26,7 +26,7 @@ const fetchHospital = async (
                     return { name: el.name, ...el.location };
                 }
             );
-            console.log('hospDta', hosptData);
+
             return hosptData;
         }
     } catch (error) {

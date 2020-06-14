@@ -27,13 +27,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type Props = PropsFromRedux;
 
 const Tab = (props: Props) => {
-    const { hospitals, clearLoader } = props;
-    useEffect(() => {
-        // console.log('hospital', hospitals);
-        // if (hospitals.length > 0) {
-        //     clearLoader();
-        // }
-    }, [hospitals, clearLoader]);
     return (
         <div className="tab-section">
             <Card>
@@ -50,13 +43,6 @@ const Tab = (props: Props) => {
                     <TabPane tab="Pharmacies" key="4">
                         <PharmaciesResult />
                     </TabPane>
-                    {/* <TabPane style={{ height: '500px' }} tab="" key="5">
-                            <Layout>
-                                <div className="writer">
-                                    <Writer />
-                                </div>
-                            </Layout>
-                        </TabPane> */}
                 </Tabs>
             </Card>
         </div>

@@ -12,6 +12,11 @@ export interface FetchMapData {
     lat: number;
     radius: number;
 }
+export interface dbObj {
+    formattedAddress: any;
+    distance: any;
+    name: any;
+}
 
 interface MapInterface {
     mapData: any[];

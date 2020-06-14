@@ -1,4 +1,4 @@
-import React, { FC, ReactComponentElement, Fragment } from 'react';
+import React, { FC, Fragment } from 'react';
 import Navbar from '../Components/Navbar';
 import { ConnectedProps, connect } from 'react-redux';
 import { StateInter } from '../interfaces/Global';
@@ -48,17 +48,7 @@ export const Layout: FC<ComponentProps> = ({ Component, showSelect }) => {
 };
 
 const WithLayout: FC<Props> = (props: Props) => {
-    const {
-        Main,
-
-        Alert,
-        Loader,
-        loading,
-        viewResult,
-        mapData,
-        message,
-        user,
-    } = props;
+    const { Main, Alert, Loader, loading, message } = props;
     if (loading) return <Loader />;
 
     if (message) return <Layout showSelect Component={Alert} />;

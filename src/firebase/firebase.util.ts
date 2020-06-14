@@ -40,32 +40,6 @@ export const createUserDocument = async (userData: userData) => {
     return userRef;
 };
 
-const convertDataToSnapShot = (data: any) => {
-    const res = data.docs.map((doc: any) => {
-        return doc.data();
-    });
-    return res;
-};
-export const fetchData = async (type: string) => {
-    let value: any[] = [];
-    const collectR = firestore.collection(type);
-    collectR.onSnapshot(async (snapshot) => {
-        var data = convertDataToSnapShot(snapshot);
-        value.push(
-            ...data.filter(
-                (val: any) => val.userId === 'FsuuRzJDgkNEGEM3JoX4nVBNS6q2'
-            )
-        );
-        console.log(
-            data.filter(
-                (val: any) => val.userId === 'FsuuRzJDgkNEGEM3JoX4nVBNS6q2'
-            )
-        );
-    });
-
-    return value;
-};
-
 export const addLocation = async (
     type: string,
     userid: string,

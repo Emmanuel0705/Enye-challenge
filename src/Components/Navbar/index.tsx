@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Button, Tooltip } from 'antd';
 import { connect, ConnectedProps } from 'react-redux';
-import { viewResult, clearResult } from '../../redux/actions/map.acton';
+
 import { Link } from 'react-router-dom';
 import { LoginOutlined } from '@ant-design/icons';
 import { clearUserData } from '../../redux/actions/user.action';
@@ -11,8 +11,6 @@ const { Header } = Layout;
 const MapStateToProps = (state: any) => ({});
 
 const MapDispatchToProp = (dispatch: Function) => ({
-    viewResult: () => dispatch(viewResult()),
-    clearResult: () => dispatch(clearResult()),
     LogOut: () => dispatch(clearUserData()),
 });
 const connector = connect(MapStateToProps, MapDispatchToProp);
@@ -28,13 +26,8 @@ const Navbar = (props: Props) => {
     return (
         <Header>
             <Link to="/">
-                <div
-                    style={{ cursor: 'pointer' }}
-                    className="logo"
-                    onClick={() => props.clearResult()}
-                >
+                <div style={{ cursor: 'pointer' }} className="logo">
                     <Button
-                        onClick={() => props.viewResult()}
                         style={{
                             background: 'transparent',
                             color: 'white',
@@ -51,7 +44,6 @@ const Navbar = (props: Props) => {
             <div className="result">
                 <Link to="/results">
                     <Button
-                        onClick={() => props.viewResult()}
                         style={{ background: 'transparent', color: 'white' }}
                         type="dashed"
                     >

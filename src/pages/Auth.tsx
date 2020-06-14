@@ -12,8 +12,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import { storeUser } from '../redux/actions/user.action';
 import { setLoader, clearLoader } from '../redux/actions/map.acton';
 import { StateInter } from '../interfaces/Global';
-import { title } from 'process';
-import { url } from 'inspector';
 
 const MapStateToProps = (state: StateInter) => ({
     userData: state.user.userData,
@@ -60,7 +58,7 @@ const SignIn = (props: Props) => {
                 setState({ ...state, loading: false });
             });
         } else {
-            // history.push('/');
+            history.push('/');
         }
     }, []);
     return (
