@@ -42,17 +42,17 @@ const MapContainer: FC<Props> = ({ hospitalData }) => {
                     element: htmlEl,
                     anchor: 'bottom',
                 })
-                    .setLngLat([el.lng, el.lat])
+                    .setLngLat([el.coords.lng, el.coords.lat])
                     .addTo(map);
 
                 new mapboxgl.Popup({
                     offset: 40,
                 })
-                    .setLngLat([el.lng, el.lat])
+                    .setLngLat([el.coords.lng, el.coords.lat])
                     .setHTML(`<p>${el.name}</p>`)
                     .addTo(map);
 
-                bound.extend([el.lng, el.lat]);
+                bound.extend([el.coords.lng, el.coords.lat]);
             },
             [mapData.zoom, mapData.mapContainer]
         );

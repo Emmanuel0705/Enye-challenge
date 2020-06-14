@@ -13,8 +13,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import AllRoutes from './Route';
 
 const httpLink = createHttpLink({
-    // uri: 'https://locator-graphql.herokuapp.com/graphql',
-    uri: 'http://localhost:5000/graphql',
+    uri: 'https://locator-graphql.herokuapp.com/graphql',
+    // uri: 'http://localhost:5000/graphql',
 });
 
 const cache = new InMemoryCache();

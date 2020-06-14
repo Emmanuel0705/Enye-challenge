@@ -111,13 +111,37 @@ export const changeCategory = (data: string): Object => async (
     });
 };
 
-export const setUserCoords = (data: any[]): Object => async (
-    dispatch: Function
-) => {
-    dispatch({
-        type: SET_USER_COORDS,
-        payload: data,
-    });
+export const setUserCoords = (): Object => async (dispatch: Function) => {
+    if (!navigator.onLine) {
+        dispatch(clearLoader());
+        return dispatch(
+            setMessage(
+                'No Internet connection, pls check your connect and try again and try again'
+            )
+        );
+    }
+
+    if (!navigator.geolocation) {
+        dispatch(clearLoader());
+        return dispatch(setMessage('Geolocation is not supported'));
+    }
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const lng = position.coords.longitude;
+            const lat = position.coords.latitude;
+            dispatch({
+                type: SET_USER_COORDS,
+                payload: { lat, lng },
+            });
+        },
+        (error) => {
+            dispatch(
+                setMessage(
+                    'Unable to get your current location please, refresh this page or user another browser'
+                )
+            );
+        }
+    );
 };
 export const setMessage = (data: string): Object => async (
     dispatch: Function

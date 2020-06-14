@@ -60,10 +60,10 @@ const WithLayout: FC<Props> = (props: Props) => {
         user,
     } = props;
     if (loading) return <Loader />;
-    if (mapData.length > 0) return <Layout showSelect Component={Main} />;
+
     if (message) return <Layout showSelect Component={Alert} />;
 
-    return <Loader />;
+    return <Layout showSelect Component={Main} />;
 };
 
 export default connector(WithLayout);
