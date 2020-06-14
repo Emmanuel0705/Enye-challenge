@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Spin } from 'antd';
 
-const CardComponent: FC = () => {
+const Spinner: FC = () => {
     return (
         <div className="large-container">
             <Spin size="large" tip="Loading............"></Spin>
@@ -9,4 +9,4 @@ const CardComponent: FC = () => {
     );
 };
 
-export default CardComponent;
+export default Spinner;

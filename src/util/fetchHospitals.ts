@@ -15,9 +15,10 @@ const fetchHospital = async (
 
     try {
         const hospitals = await axios.get(
-            `https://api.foursquare.com/v2/venues/search?ll=${lat},${lng}&categoryId=${catId}&radius=${rad}&client_id=${clientId}&client_secret=${clientSecret}&limit=${20}&v=20180628`
+            `https://api.foursquare.com/v2/venues/search?ll=${6.550323199999999},${3.3390592}&categoryId=${catId}&radius=${rad}&client_id=${clientId}&client_secret=${clientSecret}&limit=${20}&v=20180628`
         );
         // ${6.550323199999999},${3.3390592}
+        // ${lat},${lng}
 
         if (hospitals.data.response.venues) {
             const hosptData: any = hospitals.data.response.venues.map(

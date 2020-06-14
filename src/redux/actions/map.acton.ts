@@ -33,9 +33,11 @@ export const storeMapData = (mapdata: any[]): Object => async (
     });
 };
 
-export const fetchMapData = (radius: number, cat: string) => async (
-    dispatch: Function
-) => {
+export const fetchMapData = (
+    radius: number,
+    cat: string,
+    userId: string
+) => async (dispatch: Function) => {
     dispatch(clearMapData());
     if (!navigator.onLine) {
         dispatch(clearLoader());
@@ -58,8 +60,10 @@ export const fetchMapData = (radius: number, cat: string) => async (
             if (res.length > 0 && res[0] !== 'error') {
                 addLocation(
                     `${cat}s`,
+                    userId,
                     res.map((data: dbObj) => {
                         return {
+                            userId,
                             formattedAddress: data.formattedAddress,
                             distance: data.distance,
                             name: data.name,
@@ -159,6 +163,7 @@ export const viewResult = () => async (dispatch: Function) => {
     const category = ['hospitals', 'clinics', 'pharmacies', 'medicals'];
     category.map(async (cat) => {
         const res = await fetchData(cat);
+
         dispatch({
             type: getCat(cat),
             payload: res,

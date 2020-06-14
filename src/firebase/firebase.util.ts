@@ -15,6 +15,30 @@ const config = {
     appId: '1:671051561063:web:161fbc74b7a136e7467cc2',
     measurementId: 'G-M9KKL4CG0K',
 };
+export interface userData {
+    uid: string;
+    email: string;
+}
+
+export const createUserDocument = async (userData: userData) => {
+    if (!userData) return;
+    const userRef = firestore.doc(`users/${userData.uid}`);
+
+    const snapshot = await userRef.get();
+    if (!snapshot.exists) {
+        const createdAt = new Date();
+
+        try {
+            await userRef.set({
+                email: userData.email,
+                createdAt,
+            });
+        } catch (error) {
+            console.log('error creating user', error.message);
+        }
+    }
+    return userRef;
+};
 
 const convertDataToSnapShot = (data: any) => {
     const res = data.docs.map((doc: any) => {
@@ -27,16 +51,30 @@ export const fetchData = async (type: string) => {
     const collectR = firestore.collection(type);
     collectR.onSnapshot(async (snapshot) => {
         var data = convertDataToSnapShot(snapshot);
-        value.push(...data);
+        value.push(
+            ...data.filter(
+                (val: any) => val.userId === 'FsuuRzJDgkNEGEM3JoX4nVBNS6q2'
+            )
+        );
+        console.log(
+            data.filter(
+                (val: any) => val.userId === 'FsuuRzJDgkNEGEM3JoX4nVBNS6q2'
+            )
+        );
     });
+
     return value;
 };
 
-export const addLocation = async (type: string, objectToAdd: any[]) => {
-    const collectionRef = firestore.collection(type);
+export const addLocation = async (
+    type: string,
+    userid: string,
+    objectToAdd: any[]
+) => {
+    const collectionRef = firestore.collection(`${type}`);
     const bash = firestore.batch();
     objectToAdd.forEach(async (obj) => {
-        const slugId = slug(obj.name);
+        const slugId = slug(`${obj.name}-${userid}`);
 
         const newDocRef = collectionRef.doc(slugId);
         bash.set(newDocRef, obj);
@@ -48,3 +86,10 @@ firebase.initializeApp(config);
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
+
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
+
+export const signInWithGoogle = () => auth.signInWithPopup(provider);
+
+export default firebase;

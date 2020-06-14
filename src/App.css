@@ -1,7 +1,10 @@
 @import '~antd/dist/antd.css';
 
+body {
+    height: 100%;
+}
 .logo {
-    width: 50%;
+    width: 30%;
     float: left;
     color: white;
     text-shadow: 2px 3px 6px #000;
@@ -51,6 +54,7 @@
     /* margin: auto; */
     padding-top: 150px;
     text-align: center;
+    height: 100%;
 }
 .tab-section {
     padding: 20px;
@@ -58,11 +62,19 @@
 .result {
     text-align: right;
     float: right;
-    width: 50%;
+    width: 30%;
 }
 .writer {
     padding: 40px;
 }
 .writer-b {
     margin-bottom: 30px;
+}
+.google-btn .btn {
+    margin: auto;
+}
+.logout-section {
+    width: 30%;
+    text-align: center;
+    margin: auto;
 }

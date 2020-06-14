@@ -1,5 +1,10 @@
 export interface StateInter {
     map: MapInterface;
+    user: UserInt;
+}
+
+interface UserInt {
+    userData: { id: string; email: string };
 }
 
 export interface FetchMapData {

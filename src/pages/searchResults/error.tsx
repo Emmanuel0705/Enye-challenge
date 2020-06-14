@@ -13,12 +13,14 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type Props = PropsFromRedux;
 
-const AlertComponent = (props: Props) => {
+const ErrorComponent = (props: Props) => {
     return (
         <div className="large-container">
             <Alert
                 message="Error Message"
-                description={props.msg}
+                description={
+                    'something went wrong while fetching your data, please refresh this page and try again'
+                }
                 type="error"
                 showIcon
             />
@@ -26,4 +28,4 @@ const AlertComponent = (props: Props) => {
     );
 };
 
-export default connector(AlertComponent);
+export default connector(ErrorComponent);

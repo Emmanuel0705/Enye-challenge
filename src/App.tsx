@@ -1,15 +1,16 @@
-import React, { Fragment, useEffect } from 'react';
-import Navbar from './Components/Navbar';
-import Map from './Components/Map';
-import Cards from './Components/HosptCards';
+import React, { useEffect } from 'react';
+
 import './App.css';
 import { Layout } from 'antd';
-import Spinner from './Components/ui/spinner';
-import Alert from './Components/ui/alert';
+
 import { connect, ConnectedProps } from 'react-redux';
 import { StateInter } from './interfaces/Global';
-import SelectCategory from './Components/ui/selectCat';
-import Tabs from './Components/ui/tab';
+import WithLayout from './Components/Layout';
+import Auth from './pages/Auth';
+import Main from './pages/Main';
+import Spinner from './Components/ui/spinner';
+import Alert from './Components/ui/alert';
+import Result from './pages/Results';
 
 import {
     fetchMapData,
@@ -17,7 +18,6 @@ import {
     clearMessage,
     setLoader,
 } from './redux/actions/map.acton';
-import SelectKm from './Components/ui/selectKM';
 
 interface StateInterface {
     loggedIn: boolean;
@@ -32,11 +32,12 @@ const MapStateToProps = (state: StateInter) => ({
     category: state.map.category,
     loading: state.map.loading,
     viewResult: state.map.viewResult,
+    userData: state.user.userData,
 });
 
 const MapDispatchToProp = (dispatch: Function) => ({
-    fetchMapData: (radius: number, category: string) =>
-        dispatch(fetchMapData(radius, category)),
+    fetchMapData: (radius: number, category: string, userId: string) =>
+        dispatch(fetchMapData(radius, category, userId)),
     setMessage: (data: string) => dispatch(setMessage(data)),
     clearMessage: () => dispatch(clearMessage()),
     setLoader: () => dispatch(setLoader()),
@@ -57,41 +58,21 @@ const App = (props: Props) => {
         loading,
         setLoader,
         viewResult,
+        userData,
     } = props;
 
     useEffect(() => {
+        console.log('userId', userData.id);
         clearMessage();
         setLoader();
-        fetchMapData(radius, category);
-    }, [fetchMapData, radius, clearMessage, category]);
+        if (userData.id) {
+            fetchMapData(radius, category, userData.id);
+        }
+    }, [fetchMapData, radius, clearMessage, category, userData]);
     return (
         <div className="App">
             <Layout>
-                {/* {loc.url} */}
-                <Navbar />
-                {viewResult ? (
-                    <Tabs />
-                ) : (
-                    <Fragment>
-                        {loading ? (
-                            <Spinner />
-                        ) : props.mapData.length > 0 ? (
-                            <Fragment>
-                                <Map hospitalData={mapData} />
-                                <Cards hospitalData={mapData} />
-                            </Fragment>
-                        ) : (
-                            <Alert
-                                message="Error Message"
-                                description={message}
-                            />
-                        )}
-                        <Fragment>
-                            <SelectKm />
-                            <SelectCategory />
-                        </Fragment>
-                    </Fragment>
-                )}
+                <WithLayout Main={Main} Loader={Spinner} Alert={Alert} />
             </Layout>
         </div>
     );
