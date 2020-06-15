@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`expect to render SkeletonCard component 1`] = `ShallowWrapper {}`;
+
+exports[`expect to render card component 1`] = `ShallowWrapper {}`;

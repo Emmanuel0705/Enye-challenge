@@ -1,11 +1,8 @@
 import React, { FC, Fragment } from 'react';
 import { Card } from 'antd';
 
-interface cardData {
+export interface cardData {
     name: string;
-    address: string;
-    city: string;
-    state: string;
     distance: number;
     formattedAddress: any[];
 }
